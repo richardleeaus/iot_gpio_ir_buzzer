@@ -58,8 +58,6 @@ class HubManager(object):
             self.client.set_option("MinimumPollingTime", MINIMUM_POLLING_TIME)
         # set the time until a message times out
         self.client.set_option("messageTimeout", 100000)
-        # for IoT Edge?
-        # self.client.set_message_callback("input1", receive_message_callback, self)
 
 
     def send_event(self, event, properties, send_context):
