@@ -1,14 +1,17 @@
 import random
 import time
+import os
 import sys
 import iothub_client
 import datetime
+import time
+import RPi.GPIO as GPIO
 from iothub_client import IoTHubClient, IoTHubClientError, IoTHubTransportProvider
 from iothub_client import IoTHubMessage, IoTHubMessageDispositionResult, IoTHubError, DeviceMethodReturnValue
 # from powerbi import PowerBI
+from dotenv import load_dotenv
+load_dotenv()
 
-import RPi.GPIO as GPIO
-import time
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(7, GPIO.IN)  # IR
@@ -17,7 +20,7 @@ GPIO.setup(11, GPIO.OUT)  # BUZZER
 
 # chose HTTP, AMQP or MQTT as transport protocol
 PROTOCOL = IoTHubTransportProvider.MQTT
-CONNECTION_STRING = "HostName=RichardPOC.azure-devices.net;DeviceId=pi1-movement;SharedAccessKey=YAYWnMJwMl29jmJtSk9M7IdTIN5qLB+o9v7slvvCXhQ="
+CONNECTION_STRING = os.getenv('iot_connection_string')
 MSG_TXT = "{\"datetime\": \"%s\", \"deviceId\": \"myRaspberryPi\", \"online\": %i}"
 MESSAGE_COUNTER = 0
 SEND_REPORTED_STATE_CALLBACKS = 0
@@ -39,21 +42,6 @@ def send_reported_state_callback(status_code, user_context):
     SEND_REPORTED_STATE_CALLBACKS += 1
     print ( "    Total calls confirmed: %d" % SEND_REPORTED_STATE_CALLBACKS )
 
-# receive_message_callback is invoked when an incoming message arrives on the specified 
-# input queue (in the case of this sample, "input1").  Because this is a filter module, 
-# we will forward this message onto the "output1" queue.
-# def receive_message_callback(message, hubManager):
-#     global RECEIVE_CALLBACKS
-#     message_buffer = message.get_bytearray()
-#     size = len(message_buffer)
-#     print ( "    Data: <<<%s>>> & Size=%d" % (message_buffer[:size].decode('utf-8'), size) )
-#     map_properties = message.properties()
-#     key_value_pair = map_properties.get_internals()
-#     print ( "    Properties: %s" % key_value_pair )
-#     RECEIVE_CALLBACKS += 1
-#     print ( "    Total calls received: %d" % RECEIVE_CALLBACKS )
-#     hubManager.forward_event_to_output("output1", message, 0)
-#     return IoTHubMessageDispositionResult.ACCEPTED
 
 class HubManager(object):
 
