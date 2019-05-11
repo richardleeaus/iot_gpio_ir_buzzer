@@ -6,8 +6,10 @@ import iothub_client
 import datetime
 import time
 import RPi.GPIO as GPIO
-from iothub_client import IoTHubClient, IoTHubClientError, IoTHubTransportProvider
-from iothub_client import IoTHubMessage, IoTHubMessageDispositionResult, IoTHubError, DeviceMethodReturnValue
+from iothub_client import (IoTHubClient, IoTHubClientError,
+                           IoTHubTransportProvider)
+from iothub_client import (IoTHubMessage, IoTHubMessageDispositionResult,
+                           IoTHubError, DeviceMethodReturnValue)
 # from powerbi import PowerBI
 from dotenv import load_dotenv
 load_dotenv()
