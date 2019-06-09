@@ -7,11 +7,9 @@ buzzer = Buzzer(17)
 try:
     while True:
         motion_sensor.wait_for_active()
-        buzzer.on()
-        led.blink(n=5)
         print("Motion detected")
-        time.sleep(.5)
-        buzzer.off()
+        buzzer.beep(n=2)
+        led.blink(n=2)
         time.sleep(2)
 finally:
     buzzer.off()
