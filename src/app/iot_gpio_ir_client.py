@@ -36,9 +36,9 @@ def send_confirmation_callback(message, result, user_context):
           (user_context, result))
     map_properties = message.properties()
     key_value_pair = map_properties.get_internals()
-    print("    Properties: %s" % key_value_pair)
+    print("\tProperties: %s" % key_value_pair)
     SEND_CALLBACKS += 1
-    print("    Total calls confirmed: %d" % SEND_CALLBACKS)
+    print("\tTotal calls confirmed: %d" % SEND_CALLBACKS)
 
 
 def send_reported_state_callback(status_code, user_context):
@@ -115,7 +115,7 @@ def main(connection_string, protocol, pbi):
             else:
                 print("Motion detected")
                 led.blink(n=2)
-                buzzer.beep(n=2)
+                buzzer.beep(n=1)
                 hub_manager.send_event(
                     MSG_TXT %
                     (datetime.datetime.now(), 1), {}, MESSAGE_COUNTER
