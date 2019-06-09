@@ -1,24 +1,19 @@
-import RPi.GPIO as GPIO
 import time
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(7, GPIO.IN)  # IR
-GPIO.setup(3, GPIO.OUT)  # LED
-GPIO.setup(11, GPIO.OUT)  # BUZZER
+from gpiozero import LED, MotionSensor, Buzzer
+motion_sensor = MotionSensor(4)
+led = LED(2)
+buzzer = Buzzer(17)
 
 try:
     while True:
-        i = GPIO.input(7)
-        if i==0:
-            GPIO.output(3,0)
-            print("No one here")
-        else:
-            GPIO.output(11, True)
-            GPIO.output(3,1)
-            print("Motion detected")
-            time.sleep(.5)
-            GPIO.output(11, False)
+        motion_sensor.wait_for_active()
+        buzzer.on()
+        led.blink(n=5)
+        print("Motion detected")
+        time.sleep(.5)
+        buzzer.off()
         time.sleep(2)
 finally:
-    GPIO.output(11, False)
+    buzzer.off()
+    led.off()
 
