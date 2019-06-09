@@ -18,7 +18,8 @@ load_dotenv()
 PROTOCOL = IoTHubTransportProvider.MQTT
 CONNECTION_STRING = os.getenv('iot_connection_string')
 MSG_TXT = \
-    "{\"datetime\": \"%s\", \"deviceId\": \"myRaspberryPi\", \"online\": %i}"
+    "{\"datetime\": \"%s\", \"deviceId\": \"myRaspberryPi\", " \
+    "\"online\": %i, \"total\": %i}"
 MESSAGE_COUNTER = 0
 SEND_REPORTED_STATE_CALLBACKS = 0
 SEND_CALLBACKS = 0
@@ -101,16 +102,18 @@ def main(connection_string, protocol, pbi):
 
         while True:
             motion_sensor.wait_for_active(timeout=120)
+            MESSAGE_COUNTER += 1
 
             if motion_sensor.value == 0:
                 print("No motion sensed")
                 hub_manager.send_event(
                     MSG_TXT %
-                    (datetime.datetime.now(), 0), {}, MESSAGE_COUNTER
+                    (datetime.datetime.now(), 0, MESSAGE_COUNTER),
+                    {}, MESSAGE_COUNTER
                 )
                 pbi.pub_something(
                         "my_channel",
-                        MSG_TXT % (datetime.datetime.now(), 0)
+                        MSG_TXT % (datetime.datetime.now(), 0, MESSAGE_COUNTER)
                 )
             else:
                 print("Motion detected")
@@ -118,18 +121,18 @@ def main(connection_string, protocol, pbi):
                 buzzer.beep(n=1)
                 hub_manager.send_event(
                     MSG_TXT %
-                    (datetime.datetime.now(), 1), {}, MESSAGE_COUNTER
+                    (datetime.datetime.now(), 1, MESSAGE_COUNTER),
+                    {}, MESSAGE_COUNTER
                 )
                 pbi.pub_something(
                     "my_channel",
-                    MSG_TXT % (datetime.datetime.now(), 1)
+                    MSG_TXT % (datetime.datetime.now(), 1, MESSAGE_COUNTER)
                 )
                 print("IoTHubClient.send_event_async accepted message "
                       "[%d] for transmission to IoT Hub." % MESSAGE_COUNTER)
-    
+
             time.sleep(4)
-            MESSAGE_COUNTER += 1
-      
+
     except IoTHubError as iothub_error:
         print("Unexpected error %s from IoTHub" % iothub_error)
         return
