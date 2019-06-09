@@ -10,8 +10,8 @@ load_dotenv()
 
 
 def publish_callback(result, status):
-    print("async Callback success")
-    print("publish timetoken: %d" % result.timetoken)
+    print("Power BI - async Callback success")
+    print("Power BI - publish timetoken: %d" % result.timetoken)
     pass
 
 
@@ -21,14 +21,15 @@ class PowerBI(object):
         self.pnconfig.subscribe_key = os.getenv('pbi_subscribe_key')
         self.pnconfig.publish_key = os.getenv('pbi_publish_key')
         self.pnconfig.ssl = False
-        self.pubnub = PubNub(pnconfig)
+        self.pubnub = PubNub(self.pnconfig)
 
     def pub_something(self, channel, message):
 
         try:
-            message = json.loads(message)
-            self.pubnub.publish().channel(channel).message(message). \
-                pn_async(publish_callback)
+            if len(self.pnconfig.publish_key) > 0:
+                message = json.loads(message)
+                self.pubnub.publish().channel(channel).message(message). \
+                    pn_async(publish_callback)
 
         except PubNubException as e:
             print(str(e))

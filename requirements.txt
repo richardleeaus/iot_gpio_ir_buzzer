@@ -1,3 +1,5 @@
 pep8
 azure-iothub-device-client
 pubnub
+gpiozero
+python-dotenv
