@@ -18,7 +18,7 @@ load_dotenv()
 PROTOCOL = IoTHubTransportProvider.AMQP
 CONNECTION_STRING = os.getenv('iot_connection_string')
 MSG_TXT = \
-    "{\"datetime\": \"%s\", \"deviceId\": \"myRaspberryPi\", " \
+    "{\"datetime\": \"%s\", " \
     "\"online\": %i, \"total\": %i}"
 MESSAGE_COUNTER = 0
 SEND_REPORTED_STATE_CALLBACKS = 0
@@ -70,6 +70,8 @@ class HubManager(object):
             event = IoTHubMessage(bytearray(event, 'utf8'))
             event.set_content_encoding_system_property('utf-8')
             event.set_content_type_system_property('application/json')
+
+        event.properties().add('deviceId', 'RaspberryPi3')
 
         if len(properties) > 0:
             prop_map = event.properties()
