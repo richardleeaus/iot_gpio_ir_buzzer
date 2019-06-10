@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # chose HTTP, AMQP or MQTT as transport protocol
-PROTOCOL = IoTHubTransportProvider.MQTT
+PROTOCOL = IoTHubTransportProvider.AMQP
 CONNECTION_STRING = os.getenv('iot_connection_string')
 MSG_TXT = \
     "{\"datetime\": \"%s\", \"deviceId\": \"myRaspberryPi\", " \
@@ -68,6 +68,8 @@ class HubManager(object):
     def send_event(self, event, properties, send_context):
         if not isinstance(event, IoTHubMessage):
             event = IoTHubMessage(bytearray(event, 'utf8'))
+            event.set_content_encoding_system_property('utf-8')
+            event.set_content_type_system_property('application/json')
 
         if len(properties) > 0:
             prop_map = event.properties()
@@ -128,16 +130,17 @@ def main(connection_string, protocol, pbi):
                     "my_channel",
                     MSG_TXT % (datetime.datetime.now(), 1, MESSAGE_COUNTER)
                 )
+                print(MSG_TXT % (datetime.datetime.now(), 1, MESSAGE_COUNTER))
                 print("IoTHubClient.send_event_async accepted message "
                       "[%d] for transmission to IoT Hub." % MESSAGE_COUNTER)
 
-            time.sleep(4)
+            time.sleep(5)
 
     except IoTHubError as iothub_error:
         print("Unexpected error %s from IoTHub" % iothub_error)
         return
     except KeyboardInterrupt:
-        print("IoTHubClient sample stopped")
+        print("IoTHubClient stopped")
 
 if __name__ == '__main__':
     pbi = PowerBI()
